@@ -241,7 +241,7 @@ bool YoloObjectDetector::isCheckingForObjects() const {
 bool YoloObjectDetector::publishDetectionImage(const cv::Mat& detectionImage) {
   if (detectionImagePublisher_.getNumSubscribers() < 1) return false;
   cv_bridge::CvImage cvImage;
-  cvImage.header.stamp = ros::Time::now();
+  cvImage.header.stamp = imageHeader_.stamp; // changed here ros::Time::now()
   cvImage.header.frame_id = "detection_image";
   cvImage.encoding = sensor_msgs::image_encodings::BGR8;
   cvImage.image = detectionImage;
@@ -555,7 +555,7 @@ void* YoloObjectDetector::publishInThread() {
     }
 
     darknet_ros_msgs::ObjectCount msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp = imageHeader_.stamp; // changed here from ros::Time::now()
     msg.header.frame_id = "detection";
     msg.count = num;
     objectPublisher_.publish(msg);
@@ -581,13 +581,13 @@ void* YoloObjectDetector::publishInThread() {
         }
       }
     }
-    boundingBoxesResults_.header.stamp = ros::Time::now();
+    boundingBoxesResults_.header.stamp = imageHeader_.stamp; // changed here from ros::Time::now()
     boundingBoxesResults_.header.frame_id = "detection";
     boundingBoxesResults_.image_header = headerBuff_[(buffIndex_ + 1) % 3];
     boundingBoxesPublisher_.publish(boundingBoxesResults_);
   } else {
     darknet_ros_msgs::ObjectCount msg;
-    msg.header.stamp = ros::Time::now();
+    msg.header.stamp = imageHeader_.stamp; // changed here from ros::Time::now()
     msg.header.frame_id = "detection";
     msg.count = 0;
     objectPublisher_.publish(msg);
