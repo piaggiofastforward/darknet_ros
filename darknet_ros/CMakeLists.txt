@@ -5,6 +5,8 @@ project(darknet_ros)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_FLAGS "-Wall -Wno-unused-result -Wno-unknown-pragmas -Wno-unused-variable -Wfatal-errors -fPIC ${CMAKE_C_FLAGS}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "/usr/local/pff_opencv/lib")
 
 # Define path of darknet folder here.
 find_path(DARKNET_PATH
@@ -23,13 +25,13 @@ if (CUDA_FOUND)
     CUDA_NVCC_FLAGS
     ${CUDA_NVCC_FLAGS};
     -O3
-    #-gencode arch=compute_30,code=sm_30
-    #-gencode arch=compute_35,code=sm_35
-    #-gencode arch=compute_50,code=[sm_50,compute_50]
-    #-gencode arch=compute_52,code=[sm_52,compute_52]
+    # -gencode arch=compute_30,code=sm_30
+    # -gencode arch=compute_35,code=sm_35
+    # -gencode arch=compute_50,code=[sm_50,compute_50]
+    # -gencode arch=compute_52,code=[sm_52,compute_52]
     -gencode arch=compute_62,code=sm_62
     -gencode arch=compute_75,code=sm_75
-    -gencode arch=compute_86,code=sm_86
+    #-gencode arch=compute_86,code=sm_86
   )
   add_definitions(-DGPU)
 else()
@@ -48,8 +50,196 @@ endif ( X11_FOUND )
 
 # Find rquired packeges
 find_package(Boost REQUIRED COMPONENTS thread)
-find_package(OpenCV REQUIRED)
+
+# Manually set opencv paths
+set(OpenCV_DIR "/usr/local/pff_opencv")
+set(OpenCV_INCLUDE_DIRS "/usr/local/pff_opencv/include")
+set(OpenCV_LIB_DIR "/usr/local/pff_opencv/lib")
+
+# Include OpenCV directories
 include_directories(${OpenCV_INCLUDE_DIRS})
+# Link to OpenCV libraries
+link_directories(${OpenCV_LIB_DIR})
+# Manually Specify Opencv libraries
+set(OpenCV_LIBS
+  ${OpenCV_LIB_DIR}/libopencv_core.so
+  ${OpenCV_LIB_DIR}/libopencv_core.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_core.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_aruco.so
+  ${OpenCV_LIB_DIR}/libopencv_aruco.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_aruco.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_bgsegm.so
+  ${OpenCV_LIB_DIR}/libopencv_bgsegm.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_bgsegm.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_bioinspired.so
+  ${OpenCV_LIB_DIR}/libopencv_bioinspired.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_bioinspired.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_calib3d.so
+  ${OpenCV_LIB_DIR}/libopencv_calib3d.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_calib3d.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_ccalib.so
+  ${OpenCV_LIB_DIR}/libopencv_ccalib.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_ccalib.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudaarithm.so
+  ${OpenCV_LIB_DIR}/libopencv_cudaarithm.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudaarithm.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudabgsegm.so
+  ${OpenCV_LIB_DIR}/libopencv_cudabgsegm.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudabgsegm.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudacodec.so
+  ${OpenCV_LIB_DIR}/libopencv_cudacodec.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudacodec.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudafeatures2d.so
+  ${OpenCV_LIB_DIR}/libopencv_cudafeatures2d.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudafeatures2d.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudafilters.so
+  ${OpenCV_LIB_DIR}/libopencv_cudafilters.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudafilters.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudaimgproc.so
+  ${OpenCV_LIB_DIR}/libopencv_cudaimgproc.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudaimgproc.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudalegacy.so
+  ${OpenCV_LIB_DIR}/libopencv_cudalegacy.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudalegacy.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudaobjdetect.so
+  ${OpenCV_LIB_DIR}/libopencv_cudaobjdetect.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudaobjdetect.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudaoptflow.so
+  ${OpenCV_LIB_DIR}/libopencv_cudaoptflow.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudaoptflow.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudastereo.so
+  ${OpenCV_LIB_DIR}/libopencv_cudastereo.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudastereo.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudawarping.so
+  ${OpenCV_LIB_DIR}/libopencv_cudawarping.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudawarping.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_cudev.so
+  ${OpenCV_LIB_DIR}/libopencv_cudev.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_cudev.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_datasets.so
+  ${OpenCV_LIB_DIR}/libopencv_datasets.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_datasets.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_dnn.so
+  ${OpenCV_LIB_DIR}/libopencv_dnn.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_dnn.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_dnn_superres.so
+  ${OpenCV_LIB_DIR}/libopencv_dnn_superres.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_dnn_superres.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_dpm.so
+  ${OpenCV_LIB_DIR}/libopencv_dpm.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_dpm.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_face.so
+  ${OpenCV_LIB_DIR}/libopencv_face.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_face.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_features2d.so
+  ${OpenCV_LIB_DIR}/libopencv_features2d.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_features2d.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_flann.so
+  ${OpenCV_LIB_DIR}/libopencv_flann.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_flann.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_freetype.so
+  ${OpenCV_LIB_DIR}/libopencv_freetype.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_freetype.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_fuzzy.so
+  ${OpenCV_LIB_DIR}/libopencv_fuzzy.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_fuzzy.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_gapi.so
+  ${OpenCV_LIB_DIR}/libopencv_gapi.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_gapi.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_hfs.so
+  ${OpenCV_LIB_DIR}/libopencv_hfs.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_hfs.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_highgui.so
+  ${OpenCV_LIB_DIR}/libopencv_highgui.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_highgui.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_imgcodecs.so
+  ${OpenCV_LIB_DIR}/libopencv_imgcodecs.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_imgcodecs.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_img_hash.so
+  ${OpenCV_LIB_DIR}/libopencv_img_hash.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_img_hash.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_imgproc.so
+  ${OpenCV_LIB_DIR}/libopencv_imgproc.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_imgproc.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_line_descriptor.so
+  ${OpenCV_LIB_DIR}/libopencv_line_descriptor.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_line_descriptor.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_ml.so
+  ${OpenCV_LIB_DIR}/libopencv_ml.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_ml.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_objdetect.so
+  ${OpenCV_LIB_DIR}/libopencv_objdetect.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_objdetect.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_optflow.so
+  ${OpenCV_LIB_DIR}/libopencv_optflow.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_optflow.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_phase_unwrapping.so
+  ${OpenCV_LIB_DIR}/libopencv_phase_unwrapping.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_phase_unwrapping.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_photo.so
+  ${OpenCV_LIB_DIR}/libopencv_photo.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_photo.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_plot.so
+  ${OpenCV_LIB_DIR}/libopencv_plot.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_plot.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_reg.so
+  ${OpenCV_LIB_DIR}/libopencv_reg.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_reg.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_rgbd.so
+  ${OpenCV_LIB_DIR}/libopencv_rgbd.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_rgbd.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_saliency.so
+  ${OpenCV_LIB_DIR}/libopencv_saliency.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_saliency.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_sfm.so
+  ${OpenCV_LIB_DIR}/libopencv_sfm.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_sfm.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_shape.so
+  ${OpenCV_LIB_DIR}/libopencv_shape.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_shape.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_stereo.so
+  ${OpenCV_LIB_DIR}/libopencv_stereo.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_stereo.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_stitching.so
+  ${OpenCV_LIB_DIR}/libopencv_stitching.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_stitching.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_structured_light.so
+  ${OpenCV_LIB_DIR}/libopencv_structured_light.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_structured_light.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_surface_matching.so
+  ${OpenCV_LIB_DIR}/libopencv_surface_matching.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_surface_matching.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_tracking.so
+  ${OpenCV_LIB_DIR}/libopencv_tracking.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_tracking.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_video.so
+  ${OpenCV_LIB_DIR}/libopencv_video.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_video.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_videoio.so
+  ${OpenCV_LIB_DIR}/libopencv_videoio.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_videoio.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_videostab.so
+  ${OpenCV_LIB_DIR}/libopencv_videostab.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_videostab.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_xfeatures2d.so
+  ${OpenCV_LIB_DIR}/libopencv_xfeatures2d.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_xfeatures2d.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_ximgproc.so
+  ${OpenCV_LIB_DIR}/libopencv_ximgproc.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_ximgproc.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_xobjdetect.so
+  ${OpenCV_LIB_DIR}/libopencv_xobjdetect.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_xobjdetect.so.4.2.0
+  ${OpenCV_LIB_DIR}/libopencv_xphoto.so
+  ${OpenCV_LIB_DIR}/libopencv_xphoto.so.4.2
+  ${OpenCV_LIB_DIR}/libopencv_xphoto.so.4.2.0
+)
+
+
+
+
+#find_package(OpenCV REQUIRED)
+#include_directories(${OpenCV_INCLUDE_DIRS})
 find_package(catkin REQUIRED
   COMPONENTS
     cv_bridge
@@ -281,3 +471,4 @@ if (cmake_clang_tools_FOUND)
     CF_WERROR
   )
 endif (cmake_clang_tools_FOUND)
+
