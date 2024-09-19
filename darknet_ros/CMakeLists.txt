@@ -191,9 +191,6 @@ set(OpenCV_LIBS
   ${OpenCV_LIB_DIR}/libopencv_saliency.so
   ${OpenCV_LIB_DIR}/libopencv_saliency.so.4.2
   ${OpenCV_LIB_DIR}/libopencv_saliency.so.4.2.0
-  ${OpenCV_LIB_DIR}/libopencv_sfm.so
-  ${OpenCV_LIB_DIR}/libopencv_sfm.so.4.2
-  ${OpenCV_LIB_DIR}/libopencv_sfm.so.4.2.0
   ${OpenCV_LIB_DIR}/libopencv_shape.so
   ${OpenCV_LIB_DIR}/libopencv_shape.so.4.2
   ${OpenCV_LIB_DIR}/libopencv_shape.so.4.2.0
