@@ -31,7 +31,7 @@ if (CUDA_FOUND)
     # -gencode arch=compute_52,code=[sm_52,compute_52]
     -gencode arch=compute_62,code=sm_62
     -gencode arch=compute_75,code=sm_75
-    #-gencode arch=compute_86,code=sm_86
+    -gencode arch=compute_80,code=sm_80
   )
   add_definitions(-DGPU)
 else()
